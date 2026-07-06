@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R6 Animator | Roblox Portfolio</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #0d1328;
+            --bg-card: #111a33;
+            --bg-card-hover: #162044;
+            --accent: #3b6df0;
+            --accent-glow: #5b8af7;
+            --accent-dark: #1e3a8a;
+            --text-primary: #e8ecf4;
+            --text-secondary: #a0b4d8;
+            --text-muted: #6b7fa8;
+            --border: #1c2955;
+            --border-light: #263466;
+            --gradient-2: linear-gradient(135deg, #3b6df0 0%, #5b3bf0 100%);
+            --radius: 16px;
+            --radius-lg: 24px;
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(59, 109, 240, 0.08);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: #1c2955 #0a0e1a;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-particles .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.12;
+            animation: floatOrb 20s ease-in-out infinite;
+        }
+        .bg-particles .orb:nth-child(1) {
+            width: 500px;
+            height: 500px;
+            background: #3b6df0;
+            top: -10%;
+            left: -5%;
+            animation-delay: 0s;
+            animation-duration: 22s;
+        }
+        .bg-particles .orb:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            background: #5b3bf0;
+            bottom: -15%;
+            right: -8%;
+            animation-delay: -7s;
+            animation-duration: 25s;
+        }
+        .bg-particles .orb:nth-child(3) {
+            width: 350px;
+            height: 350px;
+            background: #1e5af0;
+            top: 50%;
+            left: 50%;
+            animation-delay: -14s;
+            animation-duration: 18s;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(60px, -80px) scale(1.15); }
+            50% { transform: translate(-30px, 40px) scale(0.9); }
+            75% { transform: translate(-70px, -30px) scale(1.1); }
+        }
+
+        .grid-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.03;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(13, 19, 40, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            transition: all var(--transition);
+            flex-wrap: nowrap;
+            justify-content: center;
+        }
+        .navbar.scrolled {
+            background: rgba(13, 19, 40, 0.92);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(59, 109, 240, 0.2);
+        }
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .nav-logo .logo-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 12px var(--accent-glow);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { box-shadow: 0 0 12px var(--accent-glow); }
+            50% { box-shadow: 0 0 24px var(--accent-glow), 0 0 40px rgba(91, 138, 247, 0.4); }
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 6px;
+            flex-wrap: nowrap;
+            justify-content: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: #fff;
+            background: rgba(59, 109, 240, 0.2);
+        }
+        .nav-links a.active {
+            background: rgba(59, 109, 240, 0.3);
+            box-shadow: inset 0 0 0 1px rgba(91, 138, 247, 0.3);
+        }
+
+        .lang-switcher {
+            display: flex;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 3px;
+            gap: 2px;
+            margin-left: auto;
+        }
+        .lang-option {
+            padding: 6px 14px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+            user-select: none;
+        }
+        .lang-option.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(59, 109, 240, 0.4);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+            padding: 10px;
+            z-index: 1001;
+        }
+        .menu-toggle span {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: all var(--transition);
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 80px;
+            position: relative;
+            z-index: 1;
+        }
+        .hero .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .hero h1 {
+            font-size: clamp(2.8rem, 5vw, 4.2rem);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+        }
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, #e8ecf4 0%, #a0c4ff 40%, #7ba0f8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 480px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+        .btn {
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: var(--gradient-2);
+            color: #fff;
+            box-shadow: 0 8px 28px rgba(59, 109, 240, 0.35);
+        }
+        .btn-outline {
+            background: transparent;
+            color: #fff;
+            border: 1.5px solid var(--border-light);
+        }
+
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-card);
+            width: 100%;
+            max-width: 440px;
+            aspect-ratio: 16/10;
+            overflow: hidden;
+        }
+        .hero-card video, .hero-card iframe {
+            width: 100%;    
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sections */
+        .section {
+            padding: 100px 0;
+            position: relative;
+            z-index: 1;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-glow);
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Gallery grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .gallery-item {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            aspect-ratio: 16/10;
+        }
+        .gallery-item:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 109, 240, 0.2);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .gallery-item .item-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.85) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+        .gallery-item:hover .item-overlay {
+            opacity: 1;
+        }
+        .video-indicator {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            z-index: 2;
+            transition: all var(--transition);
+            color: #fff;
+        }
+
+        /* Projects list */
+        .projects-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: all var(--transition);
+        }
+        .project-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+        .project-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .project-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .empty-projects {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px;
+        }
+
+        /* About */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+        .about-image-wrapper {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+        .about-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .skill-tag {
+            padding: 8px 16px;
+            border-radius: 40px;
+            background: rgba(59, 109, 240, 0.12);
+            border: 1px solid rgba(91, 138, 247, 0.25);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Contact */
+        .contact-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+        }
+        .contact-links {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+        .contact-link {
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 900px) {
+            .hero .container { grid-template-columns: 1fr; text-align: center; }
+            .hero p { margin: 0 auto; }
+            .hero-buttons { justify-content: center; }
+            .about-grid { grid-template-columns: 1fr; }
+            .navbar { gap: 10px; justify-content: center; }
+            .menu-toggle { display: flex; }
+            .nav-links.collapsed { display: none; }
+            .nav-links { display: flex; }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-particles">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+    <div class="grid-pattern"></div>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-logo"><span class="logo-dot"></span> Fantys</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home" class="active" data-i18n="nav.home">Home</a></li>
+            <li><a href="#gallery" data-i18n="nav.gallery">My works</a></li>
+            <li><a href="#projects" data-i18n="nav.projects">Projects</a></li>
+            <li><a href="#about" data-i18n="nav.about">About</a></li>
+            <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+        <div class="lang-switcher">
+            <span class="lang-option active" data-lang="en">EN</span>
+            <span class="lang-option" data-lang="ru">RU</span>
+        </div>
+        <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1><span data-i18n="hero.title1">I create</span><br><span class="gradient-text" data-i18n="hero.title2">animations</span><br><span data-i18n="hero.title3">with soul</span></h1>
+                <p data-i18n="hero.desc">4 years in Moon Animator, 1 year in Blender. Smooth and lively animations for Roblox games using standard R6 rig.</p>
+                <div class="hero-buttons">
+                    <a href="#gallery" class="btn btn-primary" data-i18n="hero.btn1">📂 My works</a>
+                    <a href="#contact" class="btn btn-outline" data-i18n="hero.btn2">✉️ Contact me</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-card">
+                    <video src='./WalkAnimation.mp4' autoplay muted loop playsinline></video>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag" data-i18n="gallery.tag">🎬 My works</div>
+                <h2 class="section-title" data-i18n="gallery.title">My works</h2>
+                <p class="section-subtitle" data-i18n="gallery.sub">Images and videos of my animations.</p>
+            </div>
+            <div class="gallery-grid" id="galleryGrid"></div>
+        </div>
+    </section>
+
+    <section class="section" id="projects">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag" data-i18n="projects.tag">📋 Projects</div>
+                <h2 class="section-title" data-i18n="projects.title">Projects I worked on</h2>
+                <p class="section-subtitle" data-i18n="projects.sub">Games and studios I animated for.</p>
+            </div>
+            <div class="projects-list" id="projectsList"></div>
+        </div>
+    </section>
+
+    <section class="section" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image-wrapper">
+                    <img src="./fantysRender.png" alt="Animator">
+                </div>
+                <div class="about-text">
+                    <div class="section-tag" data-i18n="about.tag">👋 About me</div>
+                    <h3 data-i18n="about.title">Hi! I'm an R6 animator</h3>
+                    <p data-i18n="about.desc1">I specialize in animations for the standard R6 skeleton. 4 years in Moon Animator, and a year ago I picked up Blender for more complex scenes.</p>
+                    <p data-i18n="about.desc2">I create smooth movement loops, emotions, combat stances and cutscenes. I love making lively, natural animations that bring characters to life.</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Moon Animator (4 years)</span>
+                        <span class="skill-tag">Blender (1 year)</span>
+                        <span class="skill-tag">R6 Rig</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="contact" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="contact-card">
+                <div class="section-tag" data-i18n="contact.tag">💬 Contact</div>
+                <h3 data-i18n="contact.title">Let's work together!</h3>
+                <p data-i18n="contact.sub">Reach me on Discord.</p>
+                <div class="contact-links">
+                    <a href="https://discord.com/users/1153467688249725000" target="_blank" class="contact-link" style="background:#5865f2;color:#fff;">Discord</a>
+                    <a href="https://youtube.com/@Fantys_" target="_blank" class="contact-link" style="background:#ff0033;color:#fff;">YouTube</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // ================= ДАННЫЕ И НАСТРОЙКИ ГАЛЕРЕИ =================
+        // ТИПЫ КОНТЕНТА:
+        // 1. type: 'youtube' -> src: ссылка на видео или только ID видео. thumb: обложка карточки.
+        // 2. type: 'video'   -> src: путь к .mp4 файлу. thumb: обложка.
+        // 3. type: 'image'   -> src: путь к картинке.
+        
+        const galleryItems = [
+            { 
+                src: 'https://www.youtube.com/watch?v=nc4467TFsKQ', // Ссылка на YouTube видео
+                caption: 'BURDC My Part 25 (YouTube)', 
+                tag: 'Blender, Moon Animator', 
+                type: 'youtube' 
+            },
+            { 
+                 src: './MeleeAnimation.mp4', 
+                 thumb: './thumbMelee.png', 
+                 caption: 'Melee Combat', 
+                 tag: 'Blender', 
+                 type: 'video' 
+            },
+            { 
+                 src: 'https://www.youtube.com/watch?v=A3F3clf78yo', // Ссылка на YouTube видео
+                 caption: 'Aw Shucks Animation (YouTube)', 
+                 tag: 'Blender, Moon Animator', 
+                 type: 'youtube' 
+            },
+        ];
+
+        const projects = [];
+
+        // ================= ПЕРЕВОДЫ =================
+        const translations = {
+            en: {
+                'nav.home': 'Home', 'nav.gallery': 'My works', 'nav.projects': 'Projects', 'nav.about': 'About', 'nav.contact': 'Contact',
+                'hero.title1': 'I create', 'hero.title2': 'animations', 'hero.title3': 'with soul',
+                'hero.desc': '4 years in Moon Animator, 1 year in Blender. Smooth and lively animations for Roblox games using standard R6 rig.',
+                'hero.btn1': '📂 My works', 'hero.btn2': '✉️ Contact me',
+                'gallery.tag': '🎬 My works', 'gallery.title': 'My works', 'gallery.sub': 'Images and videos of my animations.',
+                'projects.tag': '📋 Projects', 'projects.title': 'Projects I worked on', 'projects.sub': 'Games and studios I animated for.',
+                'about.tag': '👋 About me', 'about.title': 'Hi! I\'m an R6 animator',
+                'about.desc1': 'I specialize in animations for the standard R6 rigs. 4 years in Moon Animator, and a year ago I picked up Blender for more complex scenes.',
+                'about.desc2': 'I create smooth movement loops, emotions, combat stances and cutscenes. I love making lively, natural animations that bring characters to life.',
+                'contact.tag': '💬 Contact', 'contact.title': 'Let\'s work together!', 'contact.sub': 'Reach me on Discord.',
+                'empty.projects': 'No projects yet, but coming soon!'
+            },
+            ru: {
+                'nav.home': 'Главная', 'nav.gallery': 'Мои работы', 'nav.projects': 'Проекты', 'nav.about': 'Обо мне', 'nav.contact': 'Контакты',
+                'hero.desc': '4 года в Moon Animator, год в Blender. Делаю плавные, живые анимации для Roblox-игр на стандартном риге R6.',
+                'hero.title1': 'Создаю', 'hero.title2': 'анимации', 'hero.title3': 'с душой',
+                'hero.btn1': '📂 Мои работы', 'hero.btn2': '✉️ Связаться',
+                'gallery.tag': '🎬 Мои работы', 'gallery.title': 'Мои работы', 'gallery.sub': 'Изображения и видео моих анимаций.',
+                'projects.tag': '📋 Проекты', 'projects.title': 'В каких проектах участвовал', 'projects.sub': 'Игры и студии, для которых я делал анимации.',
+                'about.tag': '👋 Обо мне', 'about.title': 'Привет! Я R6-аниматор',
+                'about.desc1': 'Специализируюсь на анимациях для стандартного рига R6. 4 года работаю в Moon Animator, год назад освоил Blender для более сложных сцен и рендеров.',
+                'about.desc2': 'Создаю плавные циклы движения, эмоции, боевые стойки и катсцены. Люблю делать живые, естественные анимации, которые оживляют персонажей.',
+                'contact.tag': '💬 Контакты', 'contact.title': 'Давай поработаем вместе!', 'contact.sub': 'Пиши в Discord.',
+                'empty.projects': 'Пока проектов нет, но скоро появятся!'
+            }
+        };
+
+        let currentLang = 'en';
+
+        // Функция получения ID видео из ссылок разного формата YouTube
+        function getYouTubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : url;
+        }
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            document.querySelectorAll('.lang-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            renderGallery();
+            renderProjects();
+            localStorage.setItem('lang', lang);
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = galleryItems.map(item => {
+                let thumbSrc = item.thumb || item.src;
+                
+                // Если это YouTube и превью не задано, получаем дефолтную обложку от самого YouTube
+                if (item.type === 'youtube' && !item.thumb) {
+                    const ytId = getYouTubeId(item.src);
+                    thumbSrc = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+                }
+
+                const isVideo = item.type === 'video' || item.type === 'youtube';
+
+                return `
+                <div class="gallery-item" onclick="openLightbox('${item.src}', '${item.type}')">
+                    <img src="${thumbSrc}" alt="${item.caption}" loading="lazy">
+                    ${isVideo ? '<div class="video-indicator">▶</div>' : ''}
+                    <div class="item-overlay">
+                        <span class="item-title">${item.caption}</span>
+                        <span class="item-tag">${item.tag}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderProjects() {
+            const list = document.getElementById('projectsList');
+            if (projects.length === 0) {
+                list.innerHTML = `<div class="empty-projects">${translations[currentLang]['empty.projects']}</div>`;
+            } else {
+                list.innerHTML = projects.map(p => `
+                    <div class="project-card">
+                        <h4>${p.name}</h4>
+                        <p>${p.description}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Улучшенный лайтбокс с поддержкой iframe для YouTube
+        function openLightbox(src, type) {
+            const lb = document.createElement('div');
+            lb.className = 'lightbox';
+            lb.style.position = 'fixed';
+            lb.style.inset = '0';
+            lb.style.background = 'rgba(0,0,0,0.92)';
+            lb.style.backdropFilter = 'blur(8px)';
+            lb.style.zIndex = '9999';
+            lb.style.display = 'flex';
+            lb.style.alignItems = 'center';
+            lb.style.justifyContent = 'center';
+            lb.style.padding = '30px';
+
+            let mediaElement;
+
+            if (type === 'youtube') {
+                const ytId = getYouTubeId(src);
+                mediaElement = document.createElement('iframe');
+                mediaElement.src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+                mediaElement.style.width = '80vw';
+                mediaElement.style.height = '45vw'; // Соотношение 16:9
+                mediaElement.style.maxWidth = '1100px';
+                mediaElement.style.maxHeight = '618px';
+                mediaElement.style.border = 'none';
+                mediaElement.style.borderRadius = '12px';
+                mediaElement.setAttribute('allow', 'autoplay; encrypted-media');
+                mediaElement.setAttribute('allowfullscreen', '');
+            } else if (type === 'video') {
+                mediaElement = document.createElement('video');
+                mediaElement.src = src;
+                mediaElement.controls = true;
+                mediaElement.autoplay = true;
+                mediaElement.style.maxWidth = '90vw';
+                mediaElement.style.maxHeight = '85vh';
+                mediaElement.style.borderRadius = '12px';
+            } else {
+                mediaElement = document.createElement('img');
+                mediaElement.src = src;
+                mediaElement.style.maxWidth = '90vw';
+                mediaElement.style.maxHeight = '85vh';
+                mediaElement.style.borderRadius = '12px';
+            }
+
+            const closeBtn = document.createElement('span');
+            closeBtn.innerHTML = '&times;';
+            closeBtn.style.position = 'absolute';
+            closeBtn.style.top = '20px';
+            closeBtn.style.right = '20px';
+            closeBtn.style.fontSize = '2.5rem';
+            closeBtn.style.color = '#fff';
+            closeBtn.style.cursor = 'pointer';
+            closeBtn.style.zIndex = '10';
+            closeBtn.style.lineHeight = '1';
+
+            lb.appendChild(closeBtn);
+            lb.appendChild(mediaElement);
+            document.body.appendChild(lb);
+
+            const removeLightbox = () => {
+                if (type === 'video') mediaElement.pause();
+                lb.remove();
+            };
+
+            closeBtn.addEventListener('click', removeLightbox);
+            lb.addEventListener('click', (e) => {
+                if (e.target === lb) removeLightbox();
+            });
+            document.addEventListener('keydown', function escHandler(e) {
+                if (e.key === 'Escape') {
+                    removeLightbox();
+                    document.removeEventListener('keydown', escHandler);
+                }
+            });
+        }
+
+        // ========== НАВИГАЦИЯ ==========
+        const allNavLinks = document.querySelectorAll('.nav-links a');
+        
+        allNavLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                allNavLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    e.preventDefault();
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+            
+            const sections = document.querySelectorAll('section[id]');
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            let currentSection = '';
+            
+            if (scrollY + windowHeight >= documentHeight - 50) {
+                currentSection = sections[sections.length - 1].getAttribute('id');
+            } else {
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= windowHeight / 2) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+            }
+            
+            if (currentSection) {
+                allNavLinks.forEach(link => {
+                    const href = link.getAttribute('href').substring(1);
+                    link.classList.toggle('active', href === currentSection);
+                });
+            }
+        });
+
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinksContainer = document.getElementById('navLinks');
+        menuToggle.addEventListener('click', () => {
+            navLinksContainer.classList.toggle('collapsed');
+        });
+        allNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 900) navLinksContainer.classList.add('collapsed');
+            });
+        });
+
+        document.querySelectorAll('.lang-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                applyLanguage(this.dataset.lang);
+            });
+        });
+
+        // Инициализация
+        const savedLang = localStorage.getItem('lang') || 'en';
+        applyLanguage(savedLang);
+        renderGallery();
+        renderProjects();
+    </script>
+</body>
+</html>
